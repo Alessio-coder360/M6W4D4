@@ -1,0 +1,272 @@
+
+
+
+
+// Simboli per query a mongoDB NATIVO:
+
+<!-- Simbolo	        Significato     	Linguaggio
+$gt	            Greater Than (>)	        MongoDB
+$lt	            Less Than (<)	            MongoDB
+$in	            In lista	                MongoDB
+$nin	        Non in lista	            MongoDB
+$ne	            Not Equal (!=)	            MongoDB 
+
+
+
+// Trova utenti attivi
+User.find({ isActive: true })
+
+// Trova utenti con età > 26
+User.find({ age: { $gt: 26 } })
+
+// Trova utenti con occhi marroni o blu
+User.find({ eyes: { $in: ["brown", "blue"] } })
+
+// Trova utenti che NON hanno occhi verdi o blu
+User.find({ eyes: { $nin: ["green", "blue"] } })
+
+
+// !Trova utenti della company FITCORE, mostra solo l'email 
+
+
+User.find(
+  { company: "FITCORE" },
+  { email: 1, _id: 0 } // proiezione: mostra solo email, nascondi _id
+) -->
+
+
+SEMPRE MONGODB NATIVO:
+
+Operatore	            Significato	                                 Esempio uso pratico
+
+$eq	                    Uguale a	                            { age: { $eq: 30 } } → age === 30
+
+$ne	                    Diverso da	                            { age: { $ne: 30 } } → age !== 30
+
+$gt                 	Maggiore di	                            { age: { $gt: 25 } } → age > 25
+
+$gte	                Maggiore o uguale a	                    { age: { $gte: 25 } } → age >= 25
+
+$lt	                    Minore di	                            { age: { $lt: 40 } } → age < 40
+
+$lte	                Minore o uguale a	                    { age: { $lte: 40 } } → age <= 40
+
+$in	                    Incluso in una lista	                { eyes: { $in: ["blue", "brown"] } }
+
+$nin	                Non incluso in una lista	            { eyes: { $nin: ["green", "blue"] } }       
+
+
+
+OPERATORI LOGICI NATIVO MONGODB:
+
+
+Operatore	                          Significato	                                    Esempio
+
+$and	                            Tutte le condizioni	            { $and: [ { age: { $gt: 25 } }, { isActive: true } ] }
+
+$or	                                Una delle condizioni	         { $or: [ { age: { $lt: 20 } }, { age: { $gt: 50 } } ] }
+
+$not	                            Negazione	                    { age: { $not: { $gt: 30 } } } → age <= 30
+
+$nor	                            Nessuna delle condizioni	    { $nor: [ { eyes: "green" }, { isActive: true } ] }
+
+
+OPERATORI DI ESISTENZA/TIPO MONGODB NATIVO:
+
+
+Operatore	                    Significato	                            Esempio
+
+$exists                 	Verifica se il campo esiste	             { email: { $exists: true } }
+$type	                    Verifica il tipo del campo	             { age: { $type: "number" } }
+
+
+
+
+
+
+// Utenti con età maggiore di 25
+
+db.users.find({ age: { $gt: 25 } })
+
+// Utenti attivi E con età minore di 30
+
+db.users.find({
+  $and: [
+    { isActive: true },
+    { age: { $lt: 30 } }
+  ]
+})
+
+// Utenti che hanno occhi blue O brown
+
+db.users.find({ eyes: { $in: ["blue", "brown"] } })
+
+// Utenti che NON hanno company
+
+db.users.find({ company: { $exists: false } })
+
+// Utenti con email ma non attivi
+
+db.users.find({
+  $and: [
+    { email: { $exists: true } },
+    { isActive: false }
+  ]
+})
+
+
+MONGOOSE PER MONGODB:
+
+✅ find, where, sort, skip, limit — sono di Mongoose?
+
+
+SÌ! Sono metodi forniti da Mongoose, che è una libreria per usare MongoDB in modo più comodo in Node.js.
+
+Eccoli con spiegazione veloce:
+
+Metodo	Cosa fa
+.find()	Cerca uno o più documenti (puoi passare un filtro)
+.findOne()	Trova un solo documento
+.where()	Crea una condizione che puoi estendere con .gt(), ecc.
+.sort()	Ordina i risultati (1 crescente, -1 decrescente)
+.skip()	Salta i primi N risultati (es: per paginazione)
+.limit()	Limita il numero di risultati
+.select()	Scegli quali campi mostrare o nascondere (-campo)
+
+
+
+
+
+// Trova uno o più documenti che corrispondono al filtro
+User.find({ age: { $gt: 25 } })
+
+// Trova un solo documento che corrisponde al filtro
+User.findOne({ name: "Luca" })
+
+// Crea una condizione per costruire query a catena
+User.where("age").gt(25)
+
+// Operatori usati con .where() per specificare condizioni complesse
+User.where("age").gte(18).lte(30)
+
+// Ordina i risultati (1 = crescente, -1 = decrescente)
+User.find().sort({ age: -1 })
+
+// Salta i primi N risultati (utile per paginazione)
+User.find().skip(10)
+
+// Limita il numero di risultati restituiti
+User.find().limit(5)
+
+// Seleziona solo alcuni campi da restituire
+User.find().select("name email")
+
+
+
+CHANINIG ( O CONCATENAMENTO, UN UNICO FILTRO CON PIù PARAMETRI PER LA RICERCA)
+
+User
+  .where("age").gte(18).lte(30)
+  .sort({ age: 1 })
+  .skip(10)
+  .limit(5)
+  .select("name email")
+  .then(users => console.log(users))
+
+
+
+
+
+
+
+
+
+
+MONGODB VS MONGOOSE : 
+
+ ✅ Quando usi MongoDB nativo (cioè direttamente da Mongo Shell o Compass), per fare una query devi usare:
+
+
+db.nomeCollezione.find()
+
+Spiegazione dettagliata:
+
+db = rappresenta il database attualmente selezionato
+
+nomeCollezione = il nome della collezione (es. users, products, orders, ecc.)
+
+.find() = il metodo che ti permette di cercare documenti
+
+IMPORTANTEEEEEEEEEEEEEE:
+
+Linguaggio              	Dove scriverlo	                        Esempio
+
+db.users.find()	            In Mongo Shell	                Diretto in PowerShell se hai mongosh
+
+User.find()	                In VS Code (Node.js)	            Dentro file .js con Mongoose
+
+
+
+
+
+
+
+
+Riassunto sul concetto di Promise
+Cosa è una Promise?
+Una Promise è un oggetto in JavaScript che rappresenta il risultato futuro di un'operazione asincrona. Immaginala come una promessa fatta a te: "Ti darò il gelato, appena sarà pronto!"
+
+
+
+Caratteristiche principali:
+
+Non blocca il codice:
+
+Quando una Promise è "in attesa" (pending), il programma continua ad eseguire il resto del codice. Non si ferma ad aspettare il risultato.
+
+
+
+L'Event Loop:
+
+L'event loop è il meccanismo centrale del runtime JavaScript che controlla costantemente la microtask queue. Quando il codice sincrono finisce, l'event loop esamina la coda e, se trova dei callback in attesa, li esegue immediatamente.
+
+Nessun Tempo Massimo Fisso:
+
+
+Non esiste un limite di tempo predefinito per l'attesa di una Promise. L'event loop eseguirà il callback non appena l'operazione asincrona completa, che può essere in pochi millisecondi o anche più tardi.
+
+Se l'operazione non termina mai, la Promise rimane in stato "pending" fino a che non si impone un timeout manuale.
+
+
+
+Risultato futuro:
+
+Quando l'operazione (come una richiesta a un server) si completa, la Promise viene "risolta" (fulfilled) se tutto va bene oppure "rigettata" (rejected) se c'è un errore.
+
+Gestione del risultato:
+
+
+
+Per gestire il risultato, puoi usare:
+
+.then(): per eseguire del codice quando la Promise viene risolta.
+
+async/await: per scrivere il codice in modo più lineare e "aspettare" il risultato.
+
+
+
+
+
+
+Chi crea la Promise e cosa succede in memoria?
+
+Quando esegui una funzione asincrona come fetch() (o una funzione simile), il codice della funzione crea e restituisce un oggetto Promise.
+Questo significa che:
+
+JavaScript (attraverso il runtime, che sia nel browser o in Node.js) crea in memoria un oggetto che funge da "promemoria".
+
+Questo "promemoria" è in attesa di ricevere il risultato dell'operazione (il dato richiesto o un errore).
+
+
+ una Promise è un oggetto che, inizialmente, è in uno stato "pending" (in attesa) e non contiene ancora un valore. Quando l'operazione asincrona termina, la Promise viene "riempita" o completata con un risultato (se l'operazione ha successo) oppure con un errore (se qualcosa va storto). 
+ In questo modo, la Promise "contiene" la response positiva o negativa.
