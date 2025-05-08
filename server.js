@@ -69,6 +69,7 @@ const server= express();
 const allowedOrigins = [
   'http://localhost:3000',                           // sviluppo locale
   'https://Pop-Bucks.vercel.app',                    // il tuo frontend primario
+  'https://m6-w4-d4-lb9dnhtdb-alessio-cardones-projects.vercel.app',  
   'https://m6-w4-d4-xi.vercel.app',                  // primo preview Vercel
   'https://m6-w4d4.onrender.com'                     // URL Render API (se serve)
 ];
