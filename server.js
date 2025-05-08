@@ -4,7 +4,7 @@ dotenv.config();
 
 
 import express from 'express';      
-import open from 'open';              
+//import open from 'open';              
 // Import database connection
 import connectDB from './config/db.js';
 import cors from 'cors';     
@@ -63,13 +63,7 @@ const PORT = process.env.PORT || 5000; // Porta di ascolto, se non specificata u
 
 const server= express();
 
-server.use(cors({
-  origin: "http://localhost:3000", // Origina esatta del frontend
-  credentials: true,               // Importante per gestire i cookie // ! deve essere uguale alla confi di axios in front end ritornaci e studia 
-  methods: ["GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
 
-}));
 
 const allowedOrigin = process.env.CLIENT_URL || "http://localhost:3000";
 
@@ -128,33 +122,37 @@ server.use('/api/v3/notifications', notificationRouter);
 
 
 
+server.listen(PORT, () => {
+  console.clear();
+  console.log(`🚀 Server attivo sulla porta ${PORT}`);
+});
 
    
 
 
 
-server.listen(PORT, async () => {
-    console.clear();                                      // Puliamo il terminale
-    console.log(`🚀 Server attivo su http://localhost:${PORT}/api/v3`);  // Log di conferma
+// server.listen(PORT, async () => {
+//     console.clear();                                      // Puliamo il terminale
+//     console.log(`🚀 Server attivo su http://localhost:${PORT}/api/v3`);  // Log di conferma
     
-    // Verifichiamo che il server sia effettivamente attivo prima di aprire il browser
-    try {
-        // Tentiamo una richiesta al server per verificare che risponda
-        const server = await fetch(`http://localhost:${PORT}/api/v3`);
+//     // Verifichiamo che il server sia effettivamente attivo prima di aprire il browser
+//     try {
+//         // Tentiamo una richiesta al server per verificare che risponda
+//         const server = await fetch(`http://localhost:${PORT}/api/v3`);
         
-        // Se il server risponde correttamente (status 200-299)
-        if (server.ok) {
-            await open(`http://localhost:${PORT}/api/v3`);              // Apriamo il browser solo se il server è attivo
-        }
-    } catch (error) {
-        console.log('Server non attivo, browser non aperto');    // Log se il server non risponde
-    }
+//         // Se il server risponde correttamente (status 200-299)
+//         if (server.ok) {
+//             await open(`http://localhost:${PORT}/api/v3`);              // Apriamo il browser solo se il server è attivo
+//         }
+//     } catch (error) {
+//         console.log('Server non attivo, browser non aperto');    // Log se il server non risponde
+//     }
     
-    // Informazioni di sistema fornite dal modulo os
-    console.log(`CPU cores: ${os.cpus().length}`);           // Mostra il numero di core CPU
-    console.log(`Total memory: ${Math.floor(os.totalmem() / 1024 / 1024)} MB`); // Converte bytes in MB
-    console.log(`Platform: ${os.platform()}`);               // Mostra il sistema operativo
-});
+//     // Informazioni di sistema fornite dal modulo os
+//     console.log(`CPU cores: ${os.cpus().length}`);           // Mostra il numero di core CPU
+//     console.log(`Total memory: ${Math.floor(os.totalmem() / 1024 / 1024)} MB`); // Converte bytes in MB
+//     console.log(`Platform: ${os.platform()}`);               // Mostra il sistema operativo
+// });
     
 
 
