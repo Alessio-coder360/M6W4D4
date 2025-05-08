@@ -65,16 +65,30 @@ const server= express();
 
 
 
-const allowedOrigin = process.env.CLIENT_URL || "http://localhost:3000";
+
+const allowedOrigins = [
+  'http://localhost:3000',                           // sviluppo locale
+  'https://Pop-Bucks.vercel.app',                    // il tuo frontend primario
+  'https://m6-w4-d4-xi.vercel.app',                  // primo preview Vercel
+  'https://m6-w4d4.onrender.com'                     // URL Render API (se serve)
+];
 
 server.use(
   cors({
-    origin: allowedOrigin,
+    origin: (origin, callback) => {
+      // se non c’è origin (es. client curl / Postman), lascialo passare
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS origin non autorizzato: ${origin}`));
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+    allowedHeaders: ['Content-Type','Authorization']
   })
 );
+
+
 
 
 server.use(cookieParser());
