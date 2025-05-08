@@ -680,7 +680,7 @@ html, body, #root, .app-container {
   height: 100%;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0);
-  box-shadow: 0 0 0 0 #001935(13, 110, 253, 0.4);
+  box-shadow: 0 0 0 0 #001935;
   z-index: -1;
   transition: box-shadow 0.3s ease;
 }
