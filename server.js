@@ -70,6 +70,19 @@ server.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
 
 }));
+
+const allowedOrigin = process.env.CLIENT_URL || "http://localhost:3000";
+
+server.use(
+  cors({
+    origin: allowedOrigin,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+
 server.use(cookieParser());
 server.use(express.json({ limit: '50mb' }));
 server.use(express.urlencoded({ extended: true, limit: '50mb' }));
